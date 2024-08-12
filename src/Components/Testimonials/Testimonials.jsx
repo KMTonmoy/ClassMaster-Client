@@ -18,7 +18,7 @@ const testimonials = [
         avatar: 'https://via.placeholder.com/100'
     }
 ];
-
+ 
 const Testimonials = () => {
     return (
         <section className="py-12 bg-white">
