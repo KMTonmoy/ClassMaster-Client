@@ -30,7 +30,7 @@ const FAQ = () => {
     const toggleFAQ = (index) => {
         setActiveIndex(activeIndex === index ? null : index);
     };
-
+ 
     return (
         <section className="py-12 bg-white">
             <div className="container mx-auto px-4 flex flex-col lg:flex-row items-center">
