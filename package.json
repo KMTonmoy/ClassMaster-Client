@@ -12,6 +12,7 @@
   "dependencies": {
     "axios": "^1.7.3",
     "firebase": "^10.12.5",
+    "framer-motion": "^11.3.24",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.4",
     "react": "^18.3.1",

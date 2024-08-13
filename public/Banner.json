@@ -1,19 +1,16 @@
 [
     {
-        "_id": "1",
-        "url": "https://via.placeholder.com/1600x600?text=Slide+1",
+        "url": "https://systech.co.in/wp-content/uploads/2023/07/2.jpg",
         "title": "Welcome to ClassMaster",
         "description": "Manage your classroom efficiently with our all-in-one platform."
     },
     {
-        "_id": "2",
-        "url": "https://via.placeholder.com/1600x600?text=Slide+2",
+        "url": "https://media.licdn.com/dms/image/C4E12AQFOrOBjsxTjBQ/article-cover_image-shrink_720_1280/0/1520094830207?e=2147483647&v=beta&t=Tuh29hsQ0j7fiLk61dTnZjEa0gWAaiX0MqDUICbUc7I",
         "title": "Innovative Learning Tools",
         "description": "Discover tools that make learning interactive and engaging."
     },
     {
-        "_id": "3",
-        "url": "https://via.placeholder.com/1600x600?text=Slide+3",
+        "url": "https://fileserver.teachstarter.com/thumbnails/35790-student-led-classroom-contract-upper-years-us-thumbnail-0-600x400.png",
         "title": "Seamless Classroom Management",
         "description": "Streamline classroom operations and enhance communication."
     }
