@@ -38,7 +38,7 @@ const ContactinfoSection = () => {
     };
 
     return (
-        <section className="py-12 bg-gray-100">
+        <section className="py-12   ">
             <div className="container mx-auto px-4">
                 <h2 className="text-3xl font-bold text-center mb-8">Contact Us</h2>
                 <div className="flex flex-col lg:flex-row gap-8">

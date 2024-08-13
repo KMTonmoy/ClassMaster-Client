@@ -86,7 +86,7 @@ const Testimonials = () => {
                             type="text"
                             value={userName}
                             readOnly
-                            className="p-4 w-1/2 border rounded-lg mb-4 bg-gray-100 text-gray-600"
+                            className="p-4 w-1/2 border rounded-lg mb-4    text-gray-600"
                         />
                         <button
                             onClick={handleAddComment}

@@ -42,7 +42,7 @@ const FAQ = () => {
                         {faqData.map((item, index) => (
                             <div key={index} className="mb-6">
                                 <button
-                                    className="w-full text-left flex items-center justify-between py-4 px-6 bg-gray-100 rounded-lg shadow-md focus:outline-none"
+                                    className="w-full text-left flex items-center justify-between py-4 px-6    rounded-lg shadow-md focus:outline-none"
                                     onClick={() => toggleFAQ(index)}
                                 >
                                     <span className="text-lg font-medium">{item.question}</span>

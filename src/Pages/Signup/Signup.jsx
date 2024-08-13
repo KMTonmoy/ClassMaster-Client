@@ -7,18 +7,13 @@ import { AuthContext } from '../../providers/AuthProvider';
 const Signup = () => {
     const navigate = useNavigate();
     const { createUser, updateUserProfile } = useContext(AuthContext);
-    const [image, setImage] = useState(null);
     const [users, setUsers] = useState([]);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         password: '',
         phone: '',
-        age: '',
-        bloodGroup: '',
-        profilePicture: null,
-        pin: '',
-        role: 'user' // Default role
+        role: 'user'  // Default role
     });
 
     useEffect(() => {
@@ -35,16 +30,14 @@ const Signup = () => {
     }, []);
 
     const handleChange = (e) => {
-        const { name, value, type, files } = e.target;
-        setFormData(prevState => ({
-            ...prevState,
-            [name]: type === 'file' ? files[0] : value
-        }));
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // Check if the phone number already exists in the database
         const existingUser = users.find(user => user.phone === formData.phone);
         if (existingUser) {
             toast.error('Phone number already exists.');
@@ -52,49 +45,44 @@ const Signup = () => {
         }
 
         try {
-            await createUser(formData.email, formData.password, formData.phone);
-            toast.success('Registration successful!');
-            const imageUrl = await imageUpload(image);
-
-            await updateUserProfile(formData.name, imageUrl);
-
+            // Save the user to MongoDB first
             const userData = {
                 name: formData.name,
                 password: formData.password,
                 phone: formData.phone,
                 email: formData.email,
                 verified: false,
-                role: formData.role // Include selected role
+                role: formData.role
             };
 
-            await axios.post('http://localhost:8000/user', userData);
-            console.log('User registered successfully:', formData.email);
-            setFormData({
-                name: '',
-                email: '',
-                password: '',
-                phone: '',
-                age: '',
-                bloodGroup: '',
-                profilePicture: null,
-                pin: '',
-                role: 'user' // Reset to default role
-            });
+            const mongoResponse = await axios.post('http://localhost:8000/user', userData);
 
-            setTimeout(() => {
-                navigate('/');
-            }, 3000);
+            if (mongoResponse.status === 201) { // Check if the user was created successfully
+                // If successful, sign up the user in Firebase
+                await createUser(formData.email, formData.password);
+                await updateUserProfile(formData.name);
 
+                toast.success('Registration successful!');
+
+                // Reset form data
+                setFormData({
+                    name: '',
+                    email: '',
+                    password: '',
+                    phone: '',
+                    role: 'user'
+                });
+
+                // Navigate to the home page after a delay
+                setTimeout(() => {
+                    navigate('/');
+                }, 3000);
+            } else {
+                throw new Error('Failed to save user to MongoDB');
+            }
         } catch (error) {
-            console.error('Error registering user:', error.message);
+            console.error('Error during registration:', error.message);
             toast.error('Failed to register user. Please try again.');
-        }
-    };
-
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setImage(file);
         }
     };
 
@@ -160,18 +148,16 @@ const Signup = () => {
                             onChange={handleChange}
                             className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                         >
-                            <option value="user">Principal</option>
-                            <option value="admin">Teacher</option>
-                            <option value="moderator">Student</option>
+                            <option value="teacher">Teacher</option>
+                            <option value="student">Student</option>
                         </select>
                     </div>
                     <div>
-                        
-                        <button  
+                        <button
                             type="submit"
                             className="w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                         >
-                            Sign Up 
+                            Sign Up
                         </button>
                     </div>
                 </form>

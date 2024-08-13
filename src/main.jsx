@@ -16,6 +16,7 @@ import ClassroomManagement from './Pages/ClassroomManagement/ClassroomManagement
 import Timetable from './Pages/Timetable/Timetable';
 import PrivacyPolicy from './Pages/PrivacyPolicy/PrivacyPolicy';
 import AuthProvider from './providers/AuthProvider';
+import ContactUs from './Pages/ContactUs/ContactUs';
 
 const router = createBrowserRouter([
   {
@@ -57,6 +58,10 @@ const router = createBrowserRouter([
       {
         path: "/privacy-policy",
         element: <PrivacyPolicy />,
+      },
+      {
+        path: "/contact",
+        element: <ContactUs />,
       },
     ]
   },

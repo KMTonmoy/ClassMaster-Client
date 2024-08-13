@@ -2,12 +2,12 @@ import { initializeApp } from 'firebase/app';
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAMcKSVxomfZl2P4e_oP5p7DODuG-DFL9c",
-  authDomain: "bloodlink-b2415.firebaseapp.com",
-  projectId: "bloodlink-b2415",
-  storageBucket: "bloodlink-b2415.appspot.com",
-  messagingSenderId: "556413389657",
-  appId: "1:556413389657:web:82d21fab78ff28633b1a48"
+  apiKey: "AIzaSyBH8QKOWECUoYSQ-_HpFvhYwFcq_VxVRyE",
+  authDomain: "classmaster-f63ba.firebaseapp.com",
+  projectId: "classmaster-f63ba",
+  storageBucket: "classmaster-f63ba.appspot.com",
+  messagingSenderId: "346160490128",
+  appId: "1:346160490128:web:44f22368d1ae90422a9a15"
 };
 
 export const app = initializeApp(firebaseConfig);
