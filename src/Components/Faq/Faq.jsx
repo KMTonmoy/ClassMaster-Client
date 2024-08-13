@@ -31,7 +31,7 @@ const FAQ = () => {
     };
 
     return (
-        <section className="py-12 bg-white">
+        <section className="py-12  ">
             <div className="container mx-auto px-4 flex flex-col lg:flex-row items-center">
                 <div className="lg:w-1/2">
                     <img src='https://t4.ftcdn.net/jpg/01/28/17/47/360_F_128174778_0XvhB1qi70yXNOPuUFzBNT85xKaWnVde.jpg' alt="FAQ" className="w-full h-auto rounded-lg shadow-lg" />
