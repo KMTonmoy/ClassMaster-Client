@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 const CreateClassroom = () => {
     const [formData, setFormData] = useState({
         classroomName: '',
+        room_id: '',
         timetable: {
             Monday: { start: '', end: '' },
             Tuesday: { start: '', end: '' },
@@ -23,7 +24,7 @@ const CreateClassroom = () => {
         // Load existing classrooms when the component mounts
         const loadClassrooms = async () => {
             try {
-                const response = await axios.get('http://localhost:8000/classroom');
+                const response = await axios.get('http://localhost:8000/classrooms');
                 setExistingClassrooms(response.data);
             } catch (error) {
                 console.error('Error loading classrooms:', error.message);
@@ -37,6 +38,11 @@ const CreateClassroom = () => {
     const handleClassroomNameChange = (e) => {
         setFormData({ ...formData, classroomName: e.target.value });
         setErrors({ ...errors, classroomName: '' });
+    };
+
+    const handleRoomIdChange = (e) => {
+        setFormData({ ...formData, room_id: e.target.value });
+        setErrors({ ...errors, room_id: '' });
     };
 
     const handleTimeChange = (day, field, value) => {
@@ -79,10 +85,23 @@ const CreateClassroom = () => {
         return true;
     };
 
+    const validateRoomId = () => {
+        const roomIdExists = existingClassrooms.some(
+            (classroom) => classroom.room_id === formData.room_id
+        );
+
+        if (roomIdExists) {
+            setErrors({ ...errors, room_id: 'Room ID already exists. Please choose a different ID.' });
+            return false;
+        }
+
+        return true;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!validateClassroomName() || !validateTimes()) {
+        if (!validateClassroomName() || !validateRoomId() || !validateTimes()) {
             toast.error('Please fix the errors before submitting.');
             return;
         }
@@ -101,6 +120,7 @@ const CreateClassroom = () => {
                 // Reset form after successful submission
                 setFormData({
                     classroomName: '',
+                    room_id: '',
                     timetable: {
                         Monday: { start: '', end: '' },
                         Tuesday: { start: '', end: '' },
@@ -140,6 +160,23 @@ const CreateClassroom = () => {
                         />
                         {errors.classroomName && (
                             <p className="text-red-500 text-sm mt-1">{errors.classroomName}</p>
+                        )}
+                    </div>
+                    <div>
+                        <label htmlFor="room_id" className="block text-lg font-medium text-gray-700">
+                            Room ID
+                        </label>
+                        <input
+                            type="number"
+                            id="room_id"
+                            name="room_id"
+                            value={formData.room_id}
+                            onChange={handleRoomIdChange}
+                            required
+                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                        />
+                        {errors.room_id && (
+                            <p className="text-red-500 text-sm mt-1">{errors.room_id}</p>
                         )}
                     </div>
                     <div>

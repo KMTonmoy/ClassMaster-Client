@@ -5,15 +5,14 @@ import Sidebar from '../Components/Sidebar/Sidebar';
 const Dashboard = () => {
     return (
         <div>
-            <div className='flex items-center '>
-               
+            <div className=' min-h-screen flex'>
 
-                    <Sidebar />
-                 
+                <Sidebar />
 
-                <div className='w-full h-[100%] overflow-auto'>
+                <div className='  w-full   '>
                     <Outlet />
                 </div>
+
             </div>
         </div>
     );

@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../providers/AuthProvider';
 import ManageTeachers from '../ManageTeachers/ManageTeachers';
+import ManageStudent from '../ManageStudents/Managestudent';
 
 const DashboardHome = () => {
     const { user } = useContext(AuthContext)
@@ -18,14 +19,18 @@ const DashboardHome = () => {
     console.log(role)
     return (
         <div>
-            <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 ">
+            <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 py-10 ">
                 <div className=" mb-5 bg-white text-gray-900 rounded-lg shadow-lg p-6 w-full max-w-md">
                     <h1 className="text-3xl font-bold mb-4">Welcome, {data.name || 'User'}!</h1>
                     <p className="text-lg mb-4">Email: <span className="font-semibold">{data.email}</span></p>
-                    {/* Display other user data here */}
+                    {data?.classroom ? (<p className="text-lg mb-4">ClassRoom: <span className="font-semibold">{data.classroom}</span></p>) : (<></>)}
+
                 </div>
                 {role === 'principal' && (<>
                     <ManageTeachers></ManageTeachers>
+                </>)}
+                {role === 'teacher' && (<>
+                    <ManageStudent />
                 </>)}
             </div>
         </div>

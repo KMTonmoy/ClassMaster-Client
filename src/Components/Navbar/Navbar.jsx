@@ -117,9 +117,7 @@ const Navbar = () => {
                             <Link to="/login" className="block px-4 py-2 hover:bg-blue-800 lg:hover:bg-transparent">
                                 Login
                             </Link>
-                            <Link to="/signup" className="block px-4 py-2 hover:bg-blue-800 lg:hover:bg-transparent">
-                                Signup
-                            </Link>
+
                             <label className="swap swap-rotate ml-3">
                                 <input type="checkbox" className="theme-controller" onChange={handleToggle} />
                                 <svg className="swap-off fill-current w-10 h-10" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">

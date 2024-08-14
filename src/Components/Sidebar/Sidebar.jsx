@@ -83,14 +83,15 @@ const Sidebar = () => {
               {role === 'teacher' && (
                 <>
                   <li>
-                    <Link className="block py-2 px-4 rounded text-white bg-blue-700 hover:bg-blue-800 transition-colors" to="dashboard/my-students">My Students</Link>
+                    <Link className="block py-2 px-4 rounded text-white bg-blue-700 hover:bg-blue-800 transition-colors" to="dashboard/manage-students">Manage Students</Link>
+                  </li>
+                  <li>
+                    <Link className="block py-2 px-4 rounded text-white bg-blue-700 hover:bg-blue-800 transition-colors" to="dashboard/mystudents">My Students</Link>
                   </li>
                   <li>
                     <Link className="block py-2 px-4 rounded text-white bg-blue-700 hover:bg-blue-800 transition-colors" to="dashboard/admit">Admit Student</Link>
                   </li>
-                  <li>
-                    <Link className="block py-2 px-4 rounded text-white bg-blue-700 hover:bg-blue-800 transition-colors" to="dashboard/create-timetable">Create Timetable</Link>
-                  </li>
+
                 </>
               )}
               {role === 'student' && (

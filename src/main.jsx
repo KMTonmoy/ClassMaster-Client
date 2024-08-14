@@ -19,12 +19,13 @@ import AuthProvider from './providers/AuthProvider';
 import ContactUs from './Pages/ContactUs/ContactUs';
 import Dashboard from './Layout/Dashboard';
 import DashboardHome from './Pages/DashboardHome/DashboardHome';
-import MyStudents from './Components/MyStudents/MyStudents';
 import Admit from './Pages/Admit/Admit';
 import CreateClassroom from './Pages/CreateClassroom/CreateClassroom';
 import ManageStudent from './Pages/ManageStudents/Managestudent';
 import ManageTeachers from './Pages/ManageTeachers/ManageTeachers';
 import About from './Pages/About/About';
+import Classmates from './Pages/ClassMates/Classmates';
+import MyStudents from './Pages/MyStudents/MyStudents';
 
 
 const router = createBrowserRouter([
@@ -85,12 +86,12 @@ const router = createBrowserRouter([
             element: <DashboardHome />,
           },
           {
-            path: "dashboard/my-students",
-            element: <MyStudents />,
-          },
-          {
             path: "dashboard/admit",
             element: <Admit />,
+          },
+          {
+            path: "dashboard/classmates",
+            element: <Classmates />,
           },
           {
             path: "dashboard/create-classroom",
@@ -101,8 +102,16 @@ const router = createBrowserRouter([
             element: <ManageStudent />,
           },
           {
+            path: "dashboard/mystudents",
+            element: <MyStudents />,
+          },
+          {
             path: "dashboard/manage-teachers",
             element: <ManageTeachers />,
+          },
+          {
+            path: "dashboard/view-timetable",
+            element: <Timetable />,
           },
 
         ]

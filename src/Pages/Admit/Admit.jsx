@@ -2,11 +2,11 @@ import React, { useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../../providers/AuthProvider';
-import Swal from 'sweetalert2'; // Import SweetAlert2
+import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 
 const Admit = () => {
-    const { createUser, updateUserProfile, logout } = useContext(AuthContext); // Access logout function
+    const { createUser, updateUserProfile, logout } = useContext(AuthContext);
     const [users, setUsers] = useState([]);
     const [classrooms, setClassrooms] = useState([]);
     const [formData, setFormData] = useState({
@@ -15,13 +15,14 @@ const Admit = () => {
         password: '',
         phone: '',
         role: '',
-        classroom: ''
+        classroom: '',
+        room_id: ''
     });
 
     const { user } = useContext(AuthContext);
     const email = user?.email || '';
     const [data, setData] = useState({});
-    const navigate = useNavigate(); // Hook for navigation
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (email) {
@@ -89,7 +90,8 @@ const Admit = () => {
                         email: formData.email,
                         verified: false,
                         role: formData.role,
-                        classroom: formData.classroom
+                        classroom: formData.classroom,
+                        room_id: formData.room_id
                     };
 
                     const mongoResponse = await axios.post('http://localhost:8000/user', userData);
@@ -105,7 +107,8 @@ const Admit = () => {
                             password: '',
                             phone: '',
                             role: '',
-                            classroom: ''
+                            classroom: '',
+                            room_id: ''
                         });
 
                         await logout();
@@ -114,7 +117,6 @@ const Admit = () => {
                         throw new Error('Failed to save user to MongoDB');
                     }
                 } catch (error) {
-                    console.error('Error during registration:', error.message);
                     toast.error('Failed to register user. Please try again.');
                 }
             } else if (result.dismiss === Swal.DismissReason.cancel) {
@@ -124,7 +126,7 @@ const Admit = () => {
     };
 
     return (
-        <div className="flex w-full justify-center items-center min-h-screen ">
+        <div className="flex my-10 mx-auto w-[600px] justify-center items-center min-h-screen">
             <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
                 <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">
                     {user?.role === "teacher" ? "Admit Student or Teacher" : "Admit Student"}
@@ -187,18 +189,21 @@ const Admit = () => {
                             onChange={handleChange}
                             className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                         >
-                            {user?.role === "teacher" || (
-                                <option value="teacher" className='hidden' disabled>Teacher</option>
+                            <option value="" disabled>Select Role</option>
+
+                            {data.role === "teacher" && (
+                                <option value="teacher" disabled>Teacher</option>
                             )}
-                            {user?.role === "principal" || (
+                            {data.role === "principal" && (
                                 <option value="teacher" >Teacher</option>
                             )}
 
                             <option value="student">Student</option>
                         </select>
+
                     </div>
                     <div>
-                        <label htmlFor="classroom" className="block text-lg font-medium text-gray-700">ClassRoom</label>
+                        <label htmlFor="classroom" className="block text-lg font-medium text-gray-700">Classroom</label>
                         <select
                             id="classroom"
                             name="classroom"
@@ -209,7 +214,24 @@ const Admit = () => {
                             <option value="">Select Classroom</option>
                             {classrooms.map((classroom) => (
                                 <option key={classroom._id} value={classroom.classroomName}>
-                                    {classroom.classroomName}
+                                    {classroom.classroomName} RoomID: {classroom.room_id}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div>
+                        <label htmlFor="room_id" className="block text-lg font-medium text-gray-700">RoomID</label>
+                        <select
+                            id="room_id"
+                            name="room_id"
+                            value={formData.room_id}
+                            onChange={handleChange}
+                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                        >
+                            <option value="">Select RoomID</option>
+                            {classrooms.map((classroom) => (
+                                <option key={classroom._id} value={classroom.room_id}>
+                                    RoomID: {classroom.room_id}
                                 </option>
                             ))}
                         </select>

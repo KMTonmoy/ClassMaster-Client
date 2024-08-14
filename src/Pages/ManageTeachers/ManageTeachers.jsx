@@ -102,7 +102,7 @@ const ManageTeachers = () => {
         fetchClassrooms();
     }, []);
     return (
-        <div className="flex w-full justify-center items-center ">
+        <div className="flex w-full justify-center items-center my-10">
             <div className="w-full max-w-5xl bg-white p-8 rounded-lg shadow-lg">
                 <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">Manage Teachers</h2>
                 <table className="w-full border-collapse">
