@@ -24,6 +24,8 @@ import Admit from './Pages/Admit/Admit';
 import CreateClassroom from './Pages/CreateClassroom/CreateClassroom';
 import ManageStudent from './Pages/ManageStudents/Managestudent';
 import ManageTeachers from './Pages/ManageTeachers/ManageTeachers';
+import About from './Pages/About/About';
+
 
 const router = createBrowserRouter([
   {
@@ -57,6 +59,10 @@ const router = createBrowserRouter([
       {
         path: "/classroom-management",
         element: <ClassroomManagement />,
+      },
+      {
+        path: "/about",
+        element: <About />,
       },
       {
         path: "/timetable",
@@ -98,6 +104,7 @@ const router = createBrowserRouter([
             path: "dashboard/manage-teachers",
             element: <ManageTeachers />,
           },
+
         ]
       }
     ]

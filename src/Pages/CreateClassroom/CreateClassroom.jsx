@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import Swal from 'sweetalert2';
 
 const CreateClassroom = () => {
     const [formData, setFormData] = useState({
@@ -15,9 +16,27 @@ const CreateClassroom = () => {
             Sunday: { start: '', end: '' },
         },
     });
+    const [existingClassrooms, setExistingClassrooms] = useState([]);
+    const [errors, setErrors] = useState({});
+
+    useEffect(() => {
+        // Load existing classrooms when the component mounts
+        const loadClassrooms = async () => {
+            try {
+                const response = await axios.get('http://localhost:8000/classroom');
+                setExistingClassrooms(response.data);
+            } catch (error) {
+                console.error('Error loading classrooms:', error.message);
+                toast.error('Failed to load existing classrooms.');
+            }
+        };
+
+        loadClassrooms();
+    }, []);
 
     const handleClassroomNameChange = (e) => {
         setFormData({ ...formData, classroomName: e.target.value });
+        setErrors({ ...errors, classroomName: '' });
     };
 
     const handleTimeChange = (day, field, value) => {
@@ -28,14 +47,57 @@ const CreateClassroom = () => {
                 [day]: { ...formData.timetable[day], [field]: value },
             },
         });
+        setErrors({ ...errors, [day]: { ...errors[day], [field]: '' } });
+    };
+
+    const validateTimes = () => {
+        const newErrors = {};
+        let isValid = true;
+
+        Object.keys(formData.timetable).forEach((day) => {
+            const { start, end } = formData.timetable[day];
+            if (start && !end) {
+                newErrors[day] = { end: 'End time is required if start time is selected.' };
+                isValid = false;
+            }
+        });
+
+        setErrors(newErrors);
+        return isValid;
+    };
+
+    const validateClassroomName = () => {
+        const classroomExists = existingClassrooms.some(
+            (classroom) => classroom?.name?.toLowerCase() === formData.classroomName.toLowerCase()
+        );
+
+        if (classroomExists) {
+            setErrors({ ...errors, classroomName: 'Classroom name already exists. Please choose a different name.' });
+            return false;
+        }
+
+        return true;
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!validateClassroomName() || !validateTimes()) {
+            toast.error('Please fix the errors before submitting.');
+            return;
+        }
+
         try {
             const response = await axios.post('http://localhost:8000/classrooms', formData);
             if (response.status === 201) {
-                toast.success('Classroom created successfully!');
+                // Show success alert with SweetAlert2
+                await Swal.fire({
+                    title: 'Success!',
+                    text: 'Classroom created successfully!',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+
                 // Reset form after successful submission
                 setFormData({
                     classroomName: '',
@@ -59,7 +121,7 @@ const CreateClassroom = () => {
     };
 
     return (
-        <div className="flex w-full justify-center items-center min-h-screen bg-gray-100">
+        <div className="flex w-full my-10 justify-center items-center min-h-screen">
             <div className="w-full max-w-lg bg-white p-8 rounded-lg shadow-lg">
                 <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">Create Classroom</h2>
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -76,9 +138,12 @@ const CreateClassroom = () => {
                             required
                             className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                         />
+                        {errors.classroomName && (
+                            <p className="text-red-500 text-sm mt-1">{errors.classroomName}</p>
+                        )}
                     </div>
                     <div>
-                        <h3 className="text-lg font-medium text-gray-700 mb-2">Classroom Time Table</h3>
+                        <h3 className="text-lg font-medium text-gray-700 mb-2">Classroom Timetable</h3>
                         {Object.keys(formData.timetable).map((day) => (
                             <div key={day} className="mb-4">
                                 <label className="block text-md font-medium text-gray-600">{day}</label>
@@ -100,6 +165,9 @@ const CreateClassroom = () => {
                                         className="block w-1/2 px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                                     />
                                 </div>
+                                {errors[day] && errors[day].end && (
+                                    <p className="text-red-500 text-sm mt-1">{errors[day].end}</p>
+                                )}
                             </div>
                         ))}
                     </div>

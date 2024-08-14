@@ -3,28 +3,28 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 const ManageTeachers = () => {
-    const [students, setStudents] = useState([]);
-    const [editingStudent, setEditingStudent] = useState(null);
+    const [Teachers, setTeachers] = useState([]);
+    const [editingteacher, setEditingteacher] = useState(null);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         phone: '',
-        role: 'student'
+        role: 'teacher'
     });
 
-    // Fetch all students
+    // Fetch all Teachers
     useEffect(() => {
-        const fetchStudents = async () => {
+        const fetchTeachers = async () => {
             try {
                 const response = await axios.get('http://localhost:8000/users');
-                const studentData = response.data.filter(user => user.role === 'teacher');
-                setStudents(studentData);
+                const teacherData = response.data.filter(user => user.role === 'teacher');
+                setTeachers(teacherData);
             } catch (error) {
-                console.error('Error fetching students:', error.message);
-                toast.error('Failed to fetch students.');
+                console.error('Error fetching Teachers:', error.message);
+                toast.error('Failed to fetch Teachers.');
             }
         };
-        fetchStudents();
+        fetchTeachers();
     }, []);
 
     // Handle input changes for the form
@@ -33,25 +33,25 @@ const ManageTeachers = () => {
         setFormData({ ...formData, [name]: value });
     };
 
-    // Handle editing a student
-    const handleEdit = (student) => {
-        setEditingStudent(student);
-        setFormData(student);
+    // Handle editing a teacher
+    const handleEdit = (teacher) => {
+        setEditingteacher(teacher);
+        setFormData(teacher);
     };
 
-    // Fetch updated students
-    const fetchStudents = async () => {
+    // Fetch updated Teachers
+    const fetchTeachers = async () => {
         try {
             const response = await axios.get('http://localhost:8000/users');
-            const studentData = response.data.filter(user => user.role === 'student');
-            setStudents(studentData);
+            const teacherData = response.data.filter(user => user.role === 'teacher');
+            setTeachers(teacherData);
         } catch (error) {
-            console.error('Error fetching students:', error.message);
-            toast.error('Failed to fetch students.');
+            console.error('Error fetching Teachers:', error.message);
+            toast.error('Failed to fetch Teachers.');
         }
     };
 
-    // Handle saving the updated student data
+    // Handle saving the updated teacher data
     const handleSave = async (e) => {
         e.preventDefault();
         try {
@@ -59,65 +59,79 @@ const ManageTeachers = () => {
             const { _id, ...updateData } = formData;
             const response = await axios.put(`http://localhost:8000/users/${formData.email}`, updateData);
             if (response.status === 200) {
-                toast.success('Student data updated successfully!');
-                setEditingStudent(null);
-                fetchStudents(); // Refresh the student list
+                toast.success('teacher data updated successfully!');
+                setEditingteacher(null);
+                fetchTeachers(); // Refresh the teacher list
             } else {
-                throw new Error('Failed to update student data');
+                throw new Error('Failed to update teacher data');
             }
         } catch (error) {
-            console.error('Error updating student:', error.message);
-            toast.error('Failed to update student data.');
+            console.error('Error updating teacher:', error.message);
+            toast.error('Failed to update teacher data.');
         }
     };
 
-    // Handle deleting a student
+    // Handle deleting a teacher
     const handleDelete = async (email) => {
-        if (window.confirm('Are you sure you want to delete this student?')) {
+        if (window.confirm('Are you sure you want to delete this teacher?')) {
             try {
                 const response = await axios.delete(`http://localhost:8000/users/${email}`);
                 if (response.status === 200) {
-                    setStudents(students.filter(student => student.email !== email));
-                    toast.success('Student deleted successfully!');
+                    setTeachers(Teachers.filter(teacher => teacher.email !== email));
+                    toast.success('teacher deleted successfully!');
                 } else {
-                    throw new Error('Failed to delete student');
+                    throw new Error('Failed to delete teacher');
                 }
             } catch (error) {
-                console.error('Error deleting student:', error.message);
-                toast.error('Failed to delete student.');
+                console.error('Error deleting teacher:', error.message);
+                toast.error('Failed to delete teacher.');
             }
         }
     };
+    const [classrooms, setClassrooms] = useState([]);
+    useEffect(() => {
+        const fetchClassrooms = async () => {
+            try {
+                const response = await axios.get('http://localhost:8000/classroom');
+                setClassrooms(response.data);
+            } catch (error) {
+                console.error('Error fetching classrooms:', error.message);
+            }
+        };
 
+        fetchClassrooms();
+    }, []);
     return (
-        <div className="flex w-full justify-center items-center min-h-screen bg-gray-100">
+        <div className="flex w-full justify-center items-center ">
             <div className="w-full max-w-5xl bg-white p-8 rounded-lg shadow-lg">
-                <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">Manage Students</h2>
+                <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">Manage Teachers</h2>
                 <table className="w-full border-collapse">
                     <thead>
                         <tr>
                             <th className="border-b-2 py-4 px-6 text-left">Name</th>
                             <th className="border-b-2 py-4 px-6 text-left">Email</th>
                             <th className="border-b-2 py-4 px-6 text-left">Phone</th>
+                            <th className="border-b-2 py-4 px-6 text-left">Classroom</th>
                             <th className="border-b-2 py-4 px-6 text-left">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {students.map(student => (
-                            <tr key={student.email}>
-                                <td className="border-b py-4 px-6">{student.name}</td>
-                                <td className="border-b py-4 px-6">{student.email}</td>
-                                <td className="border-b py-4 px-6">{student.phone}</td>
+                        {Teachers.map(teacher => (
+                            <tr key={teacher.email}>
+                                <td className="border-b py-4 px-6">{teacher.name}</td>
+                                <td className="border-b py-4 px-6">{teacher.email}</td>
+                                <td className="border-b py-4 px-6">{teacher.phone}</td>
+                                <td className="border-b py-4 px-6">{teacher.classroom}</td>
                                 <td className="border-b py-4 px-6">
                                     <button
                                         className="mr-2 text-blue-600 hover:text-blue-900"
-                                        onClick={() => handleEdit(student)}
+                                        onClick={() => handleEdit(teacher)}
                                     >
                                         Edit
                                     </button>
                                     <button
                                         className="text-red-600 hover:text-red-900"
-                                        onClick={() => handleDelete(student.email)}
+                                        onClick={() => handleDelete(teacher.email)}
                                     >
                                         Delete
                                     </button>
@@ -127,9 +141,9 @@ const ManageTeachers = () => {
                     </tbody>
                 </table>
 
-                {editingStudent && (
+                {editingteacher && (
                     <div className="mt-8">
-                        <h3 className="text-2xl font-bold mb-4">Edit Student</h3>
+                        <h3 className="text-2xl font-bold mb-4">Edit teacher</h3>
                         <form onSubmit={handleSave} className="space-y-4">
                             <div>
                                 <label htmlFor="name" className="block text-lg font-medium text-gray-700">Name</label>
@@ -168,6 +182,30 @@ const ManageTeachers = () => {
                                     className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                                 />
                             </div>
+
+                            <div>
+
+
+                                <label htmlFor="classroom" className="block text-lg font-medium text-gray-700">ClassRoom</label>
+                                <select
+                                    id="classroom"
+                                    name="classroom"
+                                    value={formData.classroom}
+                                    onChange={handleChange}
+                                    className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                >
+                                    <option value="">Select Classroom</option>
+                                    {classrooms.map((classroom) => (
+                                        <option key={classroom._id} value={classroom.classroomName}>
+                                            {classroom.classroomName}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+
+
+
                             <div>
                                 <button
                                     type="submit"
