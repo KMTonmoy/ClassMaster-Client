@@ -57,8 +57,7 @@ const Signup = () => {
 
             const mongoResponse = await axios.post('http://localhost:8000/user', userData);
 
-            if (mongoResponse.status === 201) { // Check if the user was created successfully
-                // If successful, sign up the user in Firebase
+            if (mongoResponse.status === 201) {
                 await createUser(formData.email, formData.password);
                 await updateUserProfile(formData.name);
 
@@ -70,10 +69,10 @@ const Signup = () => {
                     email: '',
                     password: '',
                     phone: '',
-                    role: 'user'
+                    role: ''
                 });
 
-                // Navigate to the home page after a delay
+
                 setTimeout(() => {
                     navigate('/');
                 }, 3000);

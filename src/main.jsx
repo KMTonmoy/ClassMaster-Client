@@ -17,6 +17,8 @@ import Timetable from './Pages/Timetable/Timetable';
 import PrivacyPolicy from './Pages/PrivacyPolicy/PrivacyPolicy';
 import AuthProvider from './providers/AuthProvider';
 import ContactUs from './Pages/ContactUs/ContactUs';
+import Dashboard from './Layout/Dashboard';
+import DashboardHome from './Pages/DashboardHome/DashboardHome';
 
 const router = createBrowserRouter([
   {
@@ -65,6 +67,16 @@ const router = createBrowserRouter([
       },
     ]
   },
+  {
+    path: "/dashboard",
+    element: <Dashboard />,
+    children: [
+      {
+        path: "/dashboard",
+        element: <DashboardHome />,
+      }
+    ]
+  }
 ]);
 
 createRoot(document.getElementById("root")).render(
