@@ -42,7 +42,7 @@ const Sidebar = () => {
       <AnimatePresence>
         {(isOpen || window.innerWidth >= 768) && (
           <motion.div
-            className="fixed md:relative top-0 left-0 md:h-full h-[100vh] w-64 bg-gradient-to-b from-purple-900 to-purple-600 min-h-[100vh] py-6 text-white text-center shadow-xl z-20"
+            className="fixed md:relative top-0 left-0 md:h-full h-[100vh] w-64 bg-gradient-to-b from-blue-500 to-blue-600 min-h-[100vh] py-6 text-white text-center shadow-xl z-20"
             initial={{ x: window.innerWidth < 768 ? -300 : 0 }}
             animate={{ x: 0 }}
             exit={{ x: window.innerWidth < 768 ? -300 : 0 }}
@@ -59,41 +59,47 @@ const Sidebar = () => {
             )}
             <ul className="menu p-4 space-y-4">
               <li>
-                <Link className="block py-2 px-4 rounded text-white bg-purple-700 hover:bg-purple-800 transition-colors" to="/">Home</Link>
+                <Link className="block py-2 px-4 rounded text-white bg-blue-700 hover:bg-blue-800 transition-colors" to="/">Home</Link>
               </li>
               <li>
-                <Link className="block py-2 px-4 rounded text-white bg-purple-700 hover:bg-purple-800 transition-colors" to="/dashboard">Dashboard</Link>
+                <Link className="block py-2 px-4 rounded text-white bg-blue-700 hover:bg-blue-800 transition-colors" to="/dashboard">Dashboard</Link>
               </li>
               {role === 'principal' && (
                 <>
                   <li>
-                    <Link className="block py-2 px-4 rounded text-white bg-purple-700 hover:bg-purple-800 transition-colors" to="/manage-teachers">Manage Teachers</Link>
+                    <Link className="block py-2 px-4 rounded text-white bg-blue-700 hover:bg-blue-800 transition-colors" to="dashboard/manage-teachers">Manage Teachers</Link>
                   </li>
                   <li>
-                    <Link className="block py-2 px-4 rounded text-white bg-purple-700 hover:bg-purple-800 transition-colors" to="/manage-students">Manage Students</Link>
+                    <Link className="block py-2 px-4 rounded text-white bg-blue-700 hover:bg-blue-800 transition-colors" to="dashboard/admit">Admit Student & Teacher</Link>
                   </li>
                   <li>
-                    <Link className="block py-2 px-4 rounded text-white bg-purple-700 hover:bg-purple-800 transition-colors" to="/create-classroom">Create Classroom</Link>
+                    <Link className="block py-2 px-4 rounded text-white bg-blue-700 hover:bg-blue-800 transition-colors" to="dashboard/manage-students">Manage Students</Link>
+                  </li>
+                  <li>
+                    <Link className="block py-2 px-4 rounded text-white bg-blue-700 hover:bg-blue-800 transition-colors" to="dashboard/create-classroom">Create Classroom</Link>
                   </li>
                 </>
               )}
               {role === 'teacher' && (
                 <>
                   <li>
-                    <Link className="block py-2 px-4 rounded text-white bg-purple-700 hover:bg-purple-800 transition-colors" to="/my-students">My Students</Link>
+                    <Link className="block py-2 px-4 rounded text-white bg-blue-700 hover:bg-blue-800 transition-colors" to="dashboard/my-students">My Students</Link>
                   </li>
                   <li>
-                    <Link className="block py-2 px-4 rounded text-white bg-purple-700 hover:bg-purple-800 transition-colors" to="/create-timetable">Create Timetable</Link>
+                    <Link className="block py-2 px-4 rounded text-white bg-blue-700 hover:bg-blue-800 transition-colors" to="dashboard/admit">Admit Student</Link>
+                  </li>
+                  <li>
+                    <Link className="block py-2 px-4 rounded text-white bg-blue-700 hover:bg-blue-800 transition-colors" to="dashboard/create-timetable">Create Timetable</Link>
                   </li>
                 </>
               )}
               {role === 'student' && (
                 <>
                   <li>
-                    <Link className="block py-2 px-4 rounded text-white bg-purple-700 hover:bg-purple-800 transition-colors" to="/classmates">My Classmates</Link>
+                    <Link className="block py-2 px-4 rounded text-white bg-blue-700 hover:bg-blue-800 transition-colors" to="dashboard/classmates">My Classmates</Link>
                   </li>
                   <li>
-                    <Link className="block py-2 px-4 rounded text-white bg-purple-700 hover:bg-purple-800 transition-colors" to="/view-timetable">View Timetable</Link>
+                    <Link className="block py-2 px-4 rounded text-white bg-blue-700 hover:bg-blue-800 transition-colors" to="dashboard/view-timetable">View Timetable</Link>
                   </li>
                 </>
               )}

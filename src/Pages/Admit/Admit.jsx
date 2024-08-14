@@ -4,17 +4,32 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../providers/AuthProvider';
 
-const Signup = () => {
+const Admit = () => {
     const navigate = useNavigate();
     const { createUser, updateUserProfile } = useContext(AuthContext);
     const [users, setUsers] = useState([]);
+    const [classrooms, setClassrooms] = useState([]);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         password: '',
         phone: '',
-        role: ''   
+        role: '',
+        classroom: ''
     });
+
+    const { user } = useContext(AuthContext);
+    const email = user?.email || '';
+    const [data, setData] = useState({});
+
+    useEffect(() => {
+        if (email) {
+            fetch(`http://localhost:8000/users/${email}`)
+                .then(res => res.json())
+                .then(data => setData(data))
+                .catch(error => console.error('Error fetching user data:', error));
+        }
+    }, [email]);
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -29,6 +44,19 @@ const Signup = () => {
         fetchUsers();
     }, []);
 
+    useEffect(() => {
+        const fetchClassrooms = async () => {
+            try {
+                const response = await axios.get('http://localhost:8000/classroom');
+                setClassrooms(response.data);
+            } catch (error) {
+                console.error('Error fetching classrooms:', error.message);
+            }
+        };
+
+        fetchClassrooms();
+    }, []);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -37,7 +65,6 @@ const Signup = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Check if the phone number already exists in the database
         const existingUser = users.find(user => user.phone === formData.phone);
         if (existingUser) {
             toast.error('Phone number already exists.');
@@ -45,37 +72,32 @@ const Signup = () => {
         }
 
         try {
-            // Save the user to MongoDB first
             const userData = {
                 name: formData.name,
                 password: formData.password,
                 phone: formData.phone,
                 email: formData.email,
                 verified: false,
-                role: formData.role
+                role: formData.role,
+                classroom: formData.classroom
             };
 
             const mongoResponse = await axios.post('http://localhost:8000/user', userData);
 
             if (mongoResponse.status === 201) {
-                await createUser(formData.email, formData.password);
-                await updateUserProfile(formData.name);
+
 
                 toast.success('Registration successful!');
-
-                // Reset form data
                 setFormData({
                     name: '',
                     email: '',
                     password: '',
                     phone: '',
-                    role: ''
+                    role: '',
+                    classroom: ''
                 });
 
 
-                setTimeout(() => {
-                    navigate('/');
-                }, 3000);
             } else {
                 throw new Error('Failed to save user to MongoDB');
             }
@@ -86,9 +108,11 @@ const Signup = () => {
     };
 
     return (
-        <div className="my-10 flex items-center justify-center">
-            <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
-                <h2 className="text-2xl font-bold text-center mb-8">Create Your Account</h2>
+        <div className="flex w-full justify-center items-center min-h-screen ">
+            <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
+                <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">
+                    {user?.role === "teacher" ? "Admit Student or Teacher" : "Admit Student"}
+                </h2>
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
                         <label htmlFor="name" className="block text-lg font-medium text-gray-700">Name</label>
@@ -99,7 +123,7 @@ const Signup = () => {
                             value={formData.name}
                             onChange={handleChange}
                             required
-                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                         />
                     </div>
                     <div>
@@ -111,7 +135,7 @@ const Signup = () => {
                             value={formData.email}
                             onChange={handleChange}
                             required
-                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                         />
                     </div>
                     <div>
@@ -123,7 +147,7 @@ const Signup = () => {
                             value={formData.password}
                             onChange={handleChange}
                             required
-                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                         />
                     </div>
                     <div>
@@ -135,7 +159,7 @@ const Signup = () => {
                             value={formData.phone}
                             onChange={handleChange}
                             required
-                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                         />
                     </div>
                     <div>
@@ -145,18 +169,41 @@ const Signup = () => {
                             name="role"
                             value={formData.role}
                             onChange={handleChange}
-                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                         >
-                            <option value="teacher">Teacher</option>
+                            {user?.role === "teacher" || (
+                                <option value="teacher" className='hidden' disabled>Teacher</option>
+                            )}
+                            {user?.role === "principal" || (
+                                <option value="teacher" >Teacher</option>
+                            )}
+
                             <option value="student">Student</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label htmlFor="classroom" className="block text-lg font-medium text-gray-700">ClassRoom</label>
+                        <select
+                            id="classroom"
+                            name="classroom"
+                            value={formData.classroom}
+                            onChange={handleChange}
+                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                        >
+                            <option value="">Select Classroom</option>
+                            {classrooms.map((classroom) => (
+                                <option key={classroom._id} value={classroom.name}>
+                                    {classroom.name}
+                                </option>
+                            ))}
                         </select>
                     </div>
                     <div>
                         <button
                             type="submit"
-                            className="w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                            className="w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                         >
-                            Sign Up
+                            Admit
                         </button>
                     </div>
                 </form>
@@ -165,4 +212,4 @@ const Signup = () => {
     );
 };
 
-export default Signup;
+export default Admit;

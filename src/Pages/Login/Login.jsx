@@ -5,6 +5,7 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 
+
 const Login = () => {
     const { signIn } = useContext(AuthContext);
     const [email, setEmail] = useState('');
@@ -15,10 +16,12 @@ const Login = () => {
     const location = useLocation();
     const from = location.state?.from?.pathname || "/";
 
+
     const handleLogin = async (e) => {
+        const { createUser } = useContext(AuthContext)
         e.preventDefault();
         try {
-            await signIn(email, password);
+            await createUser(email, password);
             toast.success('Login successful!');
 
             Swal.fire({
