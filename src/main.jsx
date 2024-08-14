@@ -23,6 +23,7 @@ import MyStudents from './Components/MyStudents/MyStudents';
 import Admit from './Pages/Admit/Admit';
 import CreateClassroom from './Pages/CreateClassroom/CreateClassroom';
 import ManageStudent from './Pages/ManageStudents/Managestudent';
+import ManageTeachers from './Pages/ManageTeachers/ManageTeachers';
 
 const router = createBrowserRouter([
   {
@@ -92,6 +93,10 @@ const router = createBrowserRouter([
           {
             path: "dashboard/manage-students",
             element: <ManageStudent />,
+          },
+          {
+            path: "dashboard/manage-teachers",
+            element: <ManageTeachers />,
           },
         ]
       }

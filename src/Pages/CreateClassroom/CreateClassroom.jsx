@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const CreateClassroom = () => {
     const [formData, setFormData] = useState({
@@ -28,10 +30,32 @@ const CreateClassroom = () => {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Handle form submission logic here
-        console.log(formData);
+        try {
+            const response = await axios.post('http://localhost:8000/classrooms', formData);
+            if (response.status === 201) {
+                toast.success('Classroom created successfully!');
+                // Reset form after successful submission
+                setFormData({
+                    classroomName: '',
+                    timetable: {
+                        Monday: { start: '', end: '' },
+                        Tuesday: { start: '', end: '' },
+                        Wednesday: { start: '', end: '' },
+                        Thursday: { start: '', end: '' },
+                        Friday: { start: '', end: '' },
+                        Saturday: { start: '', end: '' },
+                        Sunday: { start: '', end: '' },
+                    },
+                });
+            } else {
+                throw new Error('Failed to create classroom');
+            }
+        } catch (error) {
+            console.error('Error creating classroom:', error.message);
+            toast.error('Failed to create classroom.');
+        }
     };
 
     return (

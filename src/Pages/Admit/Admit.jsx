@@ -208,8 +208,8 @@ const Admit = () => {
                         >
                             <option value="">Select Classroom</option>
                             {classrooms.map((classroom) => (
-                                <option key={classroom._id} value={classroom.name}>
-                                    {classroom.name}
+                                <option key={classroom._id} value={classroom.classroomName}>
+                                    {classroom.classroomName}
                                 </option>
                             ))}
                         </select>
