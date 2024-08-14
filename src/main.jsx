@@ -26,6 +26,7 @@ import ManageTeachers from './Pages/ManageTeachers/ManageTeachers';
 import About from './Pages/About/About';
 import Classmates from './Pages/ClassMates/Classmates';
 import MyStudents from './Pages/MyStudents/MyStudents';
+import PrivateRoute from './providers/PrivateRoute';
 
 
 const router = createBrowserRouter([
@@ -53,10 +54,7 @@ const router = createBrowserRouter([
         path: "/login",
         element: <Login />,
       },
-      {
-        path: "/signup",
-        element: <Signup />,
-      },
+
       {
         path: "/classroom-management",
         element: <ClassroomManagement />,
@@ -79,7 +77,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/dashboard",
-        element: <Dashboard />,
+        element: <PrivateRoute><Dashboard /></PrivateRoute>,
         children: [
           {
             path: "/dashboard",

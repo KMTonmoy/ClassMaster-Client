@@ -3,53 +3,57 @@ import axios from 'axios';
 import { AuthContext } from '../../providers/AuthProvider';
 
 const MyStudents = () => {
-    const [MyStudents, setMyStudents] = useState([]);
+    const [classmates, setClassmates] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
     const { user } = useContext(AuthContext);
     const [data, setData] = useState({});
-    const email = user?.email
-    useEffect(() => {
-        if (email) {
-            fetch(`http://localhost:8000/users/${email}`)
-                .then(res => res.json())
-                .then(data => setData(data))
+    const email = user?.email;
 
-        }
+    useEffect(() => {
+        const fetchUserData = async () => {
+            if (email) {
+                try {
+                    const response = await fetch(`http://localhost:8000/users/${email}`);
+                    const userData = await response.json();
+                    setData(userData);
+                } catch (err) {
+                    console.error('Failed to fetch user data:', err);
+                }
+            }
+        };
+
+        fetchUserData();
     }, [email]);
 
-
-
-    console.log(data)
-
-
-
     useEffect(() => {
-        const fetchMyStudents = async () => {
+        const fetchClassmates = async () => {
             try {
                 const response = await axios.get('http://localhost:8000/users');
                 const allStudents = response.data;
 
-                // Filter students whose room_id matches the user's room_id
-                const matchedMyStudents = allStudents.filter(student => student.room_id === data.room_id);
+                const matchedClassmates = allStudents.filter(student => student.room_id === data.room_id);
 
-                setMyStudents(matchedMyStudents);
+                setClassmates(matchedClassmates);
                 setLoading(false);
             } catch (err) {
-                setError('Failed to load MyStudents.');
+                setError('Failed to load classmates.');
                 setLoading(false);
             }
         };
 
-        fetchMyStudents();
-    }, []);
-
+        fetchClassmates();
+    }, [data.room_id]);
 
     return (
         <div className="p-4">
-            <h2 className="text-2xl font-bold mb-4">MyStudents</h2>
-            {MyStudents.length > 0 ? (
+            <h2 className="text-2xl font-bold mb-4">Classmates</h2>
+            {loading ? (
+                <div>Loading...</div>
+            ) : error ? (
+                <div>{error}</div>
+            ) : classmates.length > 0 ? (
                 <table className="min-w-full bg-white border">
                     <thead>
                         <tr>
@@ -60,20 +64,18 @@ const MyStudents = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {MyStudents.map((classmate, index) => (
+                        {classmates.map((classmate, index) => (
                             <tr key={index}>
                                 <td className="py-2 px-4 border">{classmate.name}</td>
                                 <td className="py-2 px-4 border">{classmate.email}</td>
-
                                 <td className="py-2 px-4 border">{classmate.phone}</td>
-
                                 <td className="py-2 px-4 border">{classmate.room_id}</td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             ) : (
-                <div>No MyStudents found in your room.</div>
+                <div>No classmates found in your room.</div>
             )}
         </div>
     );
