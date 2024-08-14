@@ -21,6 +21,7 @@ const ManageStudent = () => {
                 setStudents(studentData);
             } catch (error) {
                 console.error('Error fetching students:', error.message);
+                toast.error('Failed to fetch students.');
             }
         };
         fetchStudents();
@@ -38,15 +39,29 @@ const ManageStudent = () => {
         setFormData(student);
     };
 
+    // Fetch updated students
+    const fetchStudents = async () => {
+        try {
+            const response = await axios.get('http://localhost:8000/users');
+            const studentData = response.data.filter(user => user.role === 'student');
+            setStudents(studentData);
+        } catch (error) {
+            console.error('Error fetching students:', error.message);
+            toast.error('Failed to fetch students.');
+        }
+    };
+
     // Handle saving the updated student data
     const handleSave = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.put(`http://localhost:8000/users/${formData.email}`, formData);
+            // Exclude _id from formData
+            const { _id, ...updateData } = formData;
+            const response = await axios.put(`http://localhost:8000/users/${formData.email}`, updateData);
             if (response.status === 200) {
-                setStudents(students.map(student => student.email === formData.email ? formData : student));
                 toast.success('Student data updated successfully!');
                 setEditingStudent(null);
+                fetchStudents(); // Refresh the student list
             } else {
                 throw new Error('Failed to update student data');
             }

@@ -1,12 +1,12 @@
 import React, { useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../providers/AuthProvider';
+import Swal from 'sweetalert2'; // Import SweetAlert2
+import { useNavigate } from 'react-router-dom';
 
 const Admit = () => {
-    const navigate = useNavigate();
-    const { createUser, updateUserProfile } = useContext(AuthContext);
+    const { createUser, updateUserProfile, logout } = useContext(AuthContext); // Access logout function
     const [users, setUsers] = useState([]);
     const [classrooms, setClassrooms] = useState([]);
     const [formData, setFormData] = useState({
@@ -21,6 +21,7 @@ const Admit = () => {
     const { user } = useContext(AuthContext);
     const email = user?.email || '';
     const [data, setData] = useState({});
+    const navigate = useNavigate(); // Hook for navigation
 
     useEffect(() => {
         if (email) {
@@ -65,46 +66,61 @@ const Admit = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const existingUser = users.find(user => user.phone === formData.phone);
-        if (existingUser) {
-            toast.error('Phone number already exists.');
-            return;
-        }
+        Swal.fire({
+            title: 'Are you sure?',
+            text: `Are you sure you want to admit ${formData.role === "student" ? "the student" : "the teacher"}? If Your Admit You Will Logout And Login With The Admited ${formData.role === "student" ? "the student" : "the teacher"} Account`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, admit!',
+            cancelButtonText: 'No, cancel!',
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const existingUser = users.find(user => user.phone === formData.phone);
+                if (existingUser) {
+                    toast.error('Phone number already exists.');
+                    return;
+                }
 
-        try {
-            const userData = {
-                name: formData.name,
-                password: formData.password,
-                phone: formData.phone,
-                email: formData.email,
-                verified: false,
-                role: formData.role,
-                classroom: formData.classroom
-            };
+                try {
+                    const userData = {
+                        name: formData.name,
+                        password: formData.password,
+                        phone: formData.phone,
+                        email: formData.email,
+                        verified: false,
+                        role: formData.role,
+                        classroom: formData.classroom
+                    };
 
-            const mongoResponse = await axios.post('http://localhost:8000/user', userData);
+                    const mongoResponse = await axios.post('http://localhost:8000/user', userData);
 
-            if (mongoResponse.status === 201) {
+                    if (mongoResponse.status === 201) {
+                        await createUser(formData.email, formData.password);
+                        await updateUserProfile(formData.name);
 
+                        toast.success('Registration successful!');
+                        setFormData({
+                            name: '',
+                            email: '',
+                            password: '',
+                            phone: '',
+                            role: '',
+                            classroom: ''
+                        });
 
-                toast.success('Registration successful!');
-                setFormData({
-                    name: '',
-                    email: '',
-                    password: '',
-                    phone: '',
-                    role: '',
-                    classroom: ''
-                });
-
-
-            } else {
-                throw new Error('Failed to save user to MongoDB');
+                        await logout();
+                        navigate('/login');
+                    } else {
+                        throw new Error('Failed to save user to MongoDB');
+                    }
+                } catch (error) {
+                    console.error('Error during registration:', error.message);
+                    toast.error('Failed to register user. Please try again.');
+                }
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                Swal.fire('Cancelled', 'The admission process was cancelled.', 'error');
             }
-        } catch (error) {
-            console.error('Error during registration:', error.message);
-            toast.error('Failed to register user. Please try again.');
-        }
+        });
     };
 
     return (
